@@ -3,7 +3,6 @@ import express, { Application } from "express";
 import { Routes } from "./interfaces/route.interface";
 import errorMiddleware from "./middlewares/error.middleware";
 import { notFoundError } from "./middlewares/notfound.middleware";
-import { authMiddleware } from "./middlewares/auth.middleware";
 import connectDB from "./database/connect";
 import cors from "cors";
 import cookieParser from "cookie-parser";

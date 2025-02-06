@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import UserService from "../services/user.service";
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import { RequestWithUser } from "../interfaces/auth.interface";
 
 class UserController{
@@ -12,8 +12,7 @@ class UserController{
       next: NextFunction
     )=>{
       try {
-        console.log(req.user)
-       const id: string = req.params.id;
+       const id: string = req.user?.id;
        const user = await this.userService.updateUser(req.body, id)
        res.status(StatusCodes.CREATED).json({"data": user})
       } catch (error) {

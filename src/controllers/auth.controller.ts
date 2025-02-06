@@ -29,10 +29,10 @@ class AuthController {
 		}
 	};
 
-	public logOut = async (req: Request, res: Response, next: NextFunction) => {
+	public logOut = async (req: RequestWithUser, res: Response, next: NextFunction) => {
 		try {
 			const user = await this.authService.logout(
-				(req as RequestWithUser).user._id
+				req.user?._id
 			);
 			res.setHeader("Set-Cookie", ["Authorization=; Max-age=0"]);
 			res

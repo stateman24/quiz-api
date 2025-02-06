@@ -1,6 +1,5 @@
 import { NextFunction, Response, Request } from "express";
-import { verify } from "jsonwebtoken";
-
+import { verify } from "jsonwebtoken";	
 import UserModel from "../models/user.model";
 import { JWT_SECRET } from "../config";
 import { DataStoreInJWT, RequestWithUser } from "../interfaces/auth.interface";
