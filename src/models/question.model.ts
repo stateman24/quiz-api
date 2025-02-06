@@ -21,6 +21,6 @@ const questionSchema: Schema<IQuestion> = new Schema({
 })
 
 
-const Question = mongoose.model<IQuestion>("Question", questionSchema);
+const QuestionModel = mongoose.model<IQuestion>("Question", questionSchema);
 
-export default Question
+export default QuestionModel
