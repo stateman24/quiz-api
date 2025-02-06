@@ -50,6 +50,23 @@ class QuizService {
         }
         return quiz
     }
+
+    // delete question from quiz
+    public deleteQuizQuestion = async(quizId: String, questionId: String) => {
+        // remove question from database
+        const removeQuestion = await this.questionService.deleteQuestion(questionId);
+        // find quiz by id
+        const upadatedQuiz = await QuizModel.findByIdAndUpdate(
+            quizId, 
+            {$pull : {questions: questionId}}, 
+            {new: true}
+        ).populate("questions")
+        
+        if(!upadatedQuiz){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
+        return upadatedQuiz
+    }
 }
 
 export default QuizService;

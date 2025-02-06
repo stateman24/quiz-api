@@ -15,6 +15,7 @@ class QuizRoute implements Routes {
     public initializeRoutes = () =>{
         this.router.post(this.path + "/create-quiz", [authMiddleware], this.quizController.createQuiz);
         this.router.post(this.path + "/add-question/:id", [authMiddleware], this.quizController.addQuestionToQuiz);
+        this.router.post(this.path + "/:quizId/delete-question/:questionId", [authMiddleware], this.quizController.deleteQuizQuestion);
     }
 }
 

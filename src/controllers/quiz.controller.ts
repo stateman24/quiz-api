@@ -35,6 +35,20 @@ class QuizController{
         }
     }
 
+    public deleteQuizQuestion = async(
+        req: RequestWithUser,
+        res: Response,
+        next: NextFunction
+    )=>{
+        try {
+            const { quizId, questionId } = req.params;
+            const quiz = await this.quizService.deleteQuizQuestion(quizId, questionId);
+            res.status(StatusCodes.CREATED).json({"data": quiz})
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 export default QuizController
