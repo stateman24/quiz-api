@@ -49,6 +49,21 @@ class QuizController{
         }
     }
 
+    // get all the questions in the quiz
+    public getQuizQuestions = async(
+        req: RequestWithUser,
+        res: Response,
+        next: NextFunction
+    ) =>{
+        try {
+            const quizId = req.params.id;
+            const quizQuestions = await this.quizService.getQuizQuestions(quizId);
+            res.status(StatusCodes.OK).json({"questions": quizQuestions});
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
 
 export default QuizController

@@ -39,7 +39,7 @@ class QuizService {
         // save question to database 
         const question  = await this.questionService.createQuestion(questionData)
         // update Quiz question
-        const quiz = await QuizModel.findByIdAndUpdate(
+        const quiz = await this.quizModel.findByIdAndUpdate(
             quizId, 
             { $push: { questions: question._id } }, 
             { new: true }
@@ -56,7 +56,7 @@ class QuizService {
         // remove question from database
         const removeQuestion = await this.questionService.deleteQuestion(questionId);
         // find quiz by id
-        const upadatedQuiz = await QuizModel.findByIdAndUpdate(
+        const upadatedQuiz = await this.quizModel.findByIdAndUpdate(
             quizId, 
             {$pull : {questions: questionId}}, 
             {new: true}
@@ -67,6 +67,15 @@ class QuizService {
         }
         return upadatedQuiz
     }
+
+    public getQuizQuestions = async(quizId: String) => {
+        const quizQuestions = await this.quizModel.findById(quizId).populate("questions", "-__v -createdAt")
+        if(!quizQuestions){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
+        return quizQuestions.questions
+    }
+
 }
 
 export default QuizService;
