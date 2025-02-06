@@ -20,6 +20,21 @@ class QuizController{
             next(error)
         }
     }
+
+    public addQuestionToQuiz = async(
+        req: RequestWithUser,
+        res: Response,
+        next: NextFunction
+    )=>{
+        try {
+            const quizId = req.params.id;
+            const quiz = await this.quizService.addQuestionToQuiz(quizId, req.body);
+            res.status(StatusCodes.CREATED).json({"data": quiz})
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 export default QuizController
