@@ -38,6 +38,10 @@ class App {
 	};
 
 	private initializeRoutes = (routes: Routes[]) => {
+		// routers
+		this.app.get("/", async (req, res) => {
+			res.send("Welcome to Quiz app API");
+		});
 		routes.forEach(({ router }) => {
 			this.app.use("/", router);
 		});
