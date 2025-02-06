@@ -52,11 +52,13 @@ const userSchema: Schema<IUser, UserModelType, IUserMethodsTypes> = new Schema({
 	},
 });
 
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
 	if (!this.password) return;
 	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
+	next();
 });
+
 userSchema.methods.getJWTToken = function (): TokenDataType {
 	const expiresIn = 60 * 60 * 2;
 	const token = jwt.sign({ _id: this._id }, JWT_SECRET!, {
@@ -65,13 +67,12 @@ userSchema.methods.getJWTToken = function (): TokenDataType {
 	return { token, expiresIn };
 };
 
-userSchema.method(
-	"comparePassword",
-	async function (passowrd: string): Promise<boolean> {
-		const isMatch = await bcrypt.compare(passowrd, this.password);
-		return isMatch;
-	}
-);
+userSchema.methods.comparePassword = async function (
+	password: string
+): Promise<boolean> {
+	const isMatch = await bcrypt.compare(password, this.password);
+	return isMatch;
+};
 
 const UserModel = model<IUser, UserModelType>("User", userSchema);
 
