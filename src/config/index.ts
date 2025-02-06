@@ -1,3 +1,8 @@
+import dotenv from "dotenv"
+
+dotenv.config()
+
+
 export const { PORT, JWT_LIFETIME, JWT_SECRET, NODE_ENV, ORIGIN, CREDENTIALS } =
 	process.env;
 

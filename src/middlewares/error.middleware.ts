@@ -1,6 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction,  Response, Request } from "express";
 import HTTPException from "../exceptions/http.exception";
 import { StatusCodes } from "http-status-codes";
+import { RequestWithUser } from "../interfaces/auth.interface";
 
 const errorMiddleware = async (
 	error: HTTPException,

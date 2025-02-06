@@ -3,11 +3,14 @@ import express, { Application } from "express";
 import { Routes } from "./interfaces/route.interface";
 import errorMiddleware from "./middlewares/error.middleware";
 import { notFoundError } from "./middlewares/notfound.middleware";
+import { authMiddleware } from "./middlewares/auth.middleware";
 import connectDB from "./database/connect";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
+
+ 
 class App {
 	public port: number;
 	public app: Application;
@@ -29,6 +32,7 @@ class App {
 		this.app.use(cors({ origin: CREDENTIALS, credentials: true }));
 		this.app.use(cookieParser());
 		this.app.use(morgan("combined"));
+
 	};
 
 	private initializeRoutes = (routes: Routes[]) => {
@@ -42,7 +46,7 @@ class App {
 			await connectDB(this.mongoDBUri);
 			console.log("Connected to database");
 		} catch (error) {
-			console.error("Failed to connect to database");
+			console.error("Failed to connect to database")
 		}
 	};
 
@@ -56,8 +60,7 @@ class App {
 				console.log(`Failed to start server on port ${this.port}`);
 			}
 			console.log(`Server listening on port ${this.port}`);
-		});
+		})
 	};
 }
-
-export default App;
+export default App

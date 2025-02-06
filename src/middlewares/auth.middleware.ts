@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request} from "express";
 import HTTPException from "../exceptions/http.exception";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
@@ -43,9 +43,10 @@ export const authMiddleware = async (
 		req.user = user as IUser;
 		next();
 	} catch (error) {
-		throw new HTTPException(
-			StatusCodes.UNAUTHORIZED,
-			"Wrong Authentication token"
-		);
+		next(error)
+    //throw new HTTPException(
+		//	StatusCodes.UNAUTHORIZED,
+		//	"Wrong Authentication token"
+		//);
 	}
 };
