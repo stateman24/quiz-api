@@ -23,6 +23,10 @@ const quizSchema : Schema<IQuiz> = new Schema({
         ref: "User",
         required: true        
     },
+    difficulty:{
+        type: String,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -30,6 +34,6 @@ const quizSchema : Schema<IQuiz> = new Schema({
 })
 
 
-const Quiz = mongoose.model<IQuiz>("Quiz", quizSchema);
+const QuizModel = mongoose.model<IQuiz>("Quiz", quizSchema);
 
-export default Quiz;
+export default QuizModel;
