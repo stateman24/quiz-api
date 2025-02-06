@@ -22,6 +22,7 @@ export const userSignupValidationSchema = z.object({
 		)
 		.min(8)
 		.max(16),
+	role: z.enum(["user", "admin"]),
 });
 
 export type IUserSignupDataType = z.infer<typeof userSignupValidationSchema>;
