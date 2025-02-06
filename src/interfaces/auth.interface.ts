@@ -15,7 +15,7 @@ export interface loginDataType {
 }
 
 export interface RequestWithUser extends Request {
-	user: IUser;
+	user?: IUser;
 }
 
 export interface DataStoreInJWT {

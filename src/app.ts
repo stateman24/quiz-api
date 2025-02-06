@@ -9,6 +9,8 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
 
+
+ 
 class App {
 	public port: number;
 	public app: Application;
@@ -27,6 +29,7 @@ class App {
 
 	private initializeMiddlewares = () => {
 		this.app.use(morgan("combined"));
+
 		this.app.use(express.json());
 		this.app.use(helmet());
 		this.app.use(cors({ origin: CREDENTIALS, credentials: true }));
@@ -49,7 +52,7 @@ class App {
 			await connectDB(this.mongoDBUri);
 			console.log("Connected to database");
 		} catch (error) {
-			console.error("Failed to connect to database");
+			console.error("Failed to connect to database")
 		}
 	};
 
@@ -64,8 +67,7 @@ class App {
 				console.log(`Failed to start server on port ${this.port}`);
 			}
 			console.log(`Server listening on port ${this.port}`);
-		});
+		})
 	};
 }
-
-export default App;
+export default App
