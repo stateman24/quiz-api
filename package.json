@@ -5,8 +5,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "cross-env NODE_ENV=development nodemon src/server.ts",
-		"start": "npm run build && NODE_ENV=production npm dist/server.js",
-		"build": "tsc --build"
+		"start": "NODE_ENV=production node dist/server.js",
+		"build": "tsc"
 	},
 	"keywords": [],
 	"author": "",
