@@ -14,3 +14,4 @@ export interface IQuestionData extends Document {
     correctOption: string;
 }
 
+export type IQuestionDataList = IQuestion[]
