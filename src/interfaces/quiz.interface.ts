@@ -12,10 +12,3 @@ export interface IQuiz extends Document {
     createdAt: Date
 }
 
-export interface IQuizData {
-    title: string;
-    description: string;
-    questions: IQuestion[];
-    difficulty: string,
-    categories: string
-}

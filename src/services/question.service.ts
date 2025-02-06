@@ -1,4 +1,4 @@
-import { IQuestionData, IQuestionDataList } from "../interfaces/question.interface";
+import { IQuestionData } from "../schemas/question.validation.schema";
 import { isEmpty } from "../utils/util";
 import HTTPException from "../exceptions/http.exception";
 import { StatusCodes } from "http-status-codes";

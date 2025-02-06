@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod";
 import HTTPException from "../exceptions/http.exception";
 import { StatusCodes } from "http-status-codes";
+import { RequestWithUser } from "../interfaces/auth.interface";
 
 /*
 This validation middleware uses validation schema to validate data in body params and query accordingly

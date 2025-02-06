@@ -1,10 +1,11 @@
-import { IQuizData } from "../interfaces/quiz.interface";
+import { IQuizData } from "../schemas/quiz.validation.schema";
 import { isEmpty } from "../utils/util";
 import HTTPException from "../exceptions/http.exception";
 import { StatusCodes } from "http-status-codes";
 import QuizModel from "../models/quiz.model";
-import { IQuestionData } from "../interfaces/question.interface";
+import { IQuestionData } from "../schemas/question.validation.schema";
 import QuestionService from "./question.service";
+
 
 
 class QuizService {
