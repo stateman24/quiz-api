@@ -8,6 +8,7 @@ import connectDB from "./database/connect";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import helmet from "helmet";
 
 
  
@@ -21,18 +22,20 @@ class App {
 		this.app = express();
 		this.mongoDBUri = MONGO_URI!;
 
+		this.connectDatabase();
 		this.initializeMiddlewares();
 		this.initializeRoutes(routes);
-		this.connectDatabase();
 		this.initializeErrorHandling();
 	}
 
-	private initializeMiddlewares = async () => {
-		this.app.use(express.urlencoded({ extended: true }));
-		this.app.use(cors({ origin: CREDENTIALS, credentials: true }));
-		this.app.use(cookieParser());
+	private initializeMiddlewares = () => {
 		this.app.use(morgan("combined"));
 
+		this.app.use(express.json());
+		this.app.use(helmet());
+		this.app.use(cors({ origin: CREDENTIALS, credentials: true }));
+		this.app.use(express.urlencoded({ extended: true }));
+		this.app.use(cookieParser());
 	};
 
 	private initializeRoutes = (routes: Routes[]) => {
@@ -54,6 +57,7 @@ class App {
 		this.app.use(errorMiddleware);
 		this.app.use(notFoundError);
 	};
+
 	public startServer = async () => {
 		this.app.listen(this.port, (error) => {
 			if (error) {

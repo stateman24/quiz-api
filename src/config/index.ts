@@ -1,7 +1,5 @@
-import dotenv from "dotenv"
-
-dotenv.config()
-
+import "dotenv/config";
+//config({ path: `.env.${process.env.NODE_ENV || "development"}.local` });
 
 export const { PORT, JWT_LIFETIME, JWT_SECRET, NODE_ENV, ORIGIN, CREDENTIALS } =
 	process.env;

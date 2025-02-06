@@ -4,15 +4,15 @@ import { IUser } from "../interfaces/user.interface";
 import UserModel from "../models/user.model";
 import { isEmpty } from "../utils/util";
 import {
-	SignUpDataType,
-	TokenDataType,
-	loginDataType,
-} from "../interfaces/auth.interface";
+	IUserSignupDataType,
+	IUserLoginDataType,
+} from "../schemas/auth.validation.schema";
+import { TokenDataType } from "../interfaces/auth.interface";
 
 class AuthService {
 	private authModel = UserModel;
 
-	public signup = async (userData: SignUpDataType): Promise<IUser> => {
+	public signup = async (userData: IUserSignupDataType): Promise<IUser> => {
 		if (isEmpty(userData))
 			throw new HTTPException(StatusCodes.BAD_REQUEST, "Empty user data");
 		const { password, passwordRepeat, email } = userData;
@@ -33,8 +33,8 @@ class AuthService {
 	};
 
 	public login = async (
-		loginData: loginDataType
-	): Promise<{ user: IUser; cookie: string; token: TokenDataType }> => {
+		loginData: IUserLoginDataType
+	): Promise<{ user: IUser; token: TokenDataType; cookie: string }> => {
 		if (isEmpty(loginData))
 			throw new HTTPException(StatusCodes.BAD_REQUEST, "Empty login data");
 
@@ -55,7 +55,16 @@ class AuthService {
 		return { user, cookie, token: tokenData };
 	};
 
-	public logout = async () => {};
+	public logout = async (userId: string): Promise<IUser> => {
+		if (isEmpty(userId))
+			throw new HTTPException(StatusCodes.BAD_REQUEST, "Empty user Id");
+		const user = await this.authModel.findById(userId);
+		if (!user) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "User not found");
+		}
+
+		return user;
+	};
 
 	public createCookie(tokenData: TokenDataType): string {
 		return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;

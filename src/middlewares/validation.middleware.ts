@@ -1,30 +1,33 @@
-import { plainToClass } from "class-transformer";
-import { validate, ValidationError } from "class-validator";
-import { NextFunction, Request, RequestHandler, Response } from "express";
-import HttpException from "../exceptions/http.exception";
+import { NextFunction, Request, Response } from "express";
+import { z, ZodError } from "zod";
+import HTTPException from "../exceptions/http.exception";
+import { StatusCodes } from "http-status-codes";
+
+/*
+This validation middleware uses validation schema to validate data in body params and query accordingly
+*/
 
 const validationMiddleware = (
-	type: any,
-	value: "body" | "query" | "params" = "body",
-	skipMissingProperties = false,
-	whitelist = true,
-	forbidNonWhitelisted = true
-): RequestHandler => {
-	return (req: Request, res: Response, next: NextFunction) => {
-		validate(plainToClass(type, req[value]), {
-			skipMissingProperties,
-			whitelist,
-			forbidNonWhitelisted,
-		}).then((errors: ValidationError[]) => {
-			if (errors.length > 0) {
-				const message = errors
-					.map((error: ValidationError) => Object.values(error?.constraints!))
-					.join(", ");
-				next(new HttpException(400, message));
+	schema: z.ZodTypeAny,
+	source: "body" | "params" | "query"
+) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			await schema.parseAsync(req[source]);
+			next();
+		} catch (error) {
+			if (error instanceof ZodError) {
+				const message = error.errors.map((issue: any) => ({
+					message: `${issue.path.join(".")}: ${issue.message}`,
+				}));
+				res.status(StatusCodes.BAD_REQUEST).json({ details: message });
 			} else {
-				next();
+				throw new HTTPException(
+					StatusCodes.INTERNAL_SERVER_ERROR,
+					"Something went wrong"
+				);
 			}
-		});
+		}
 	};
 };
 

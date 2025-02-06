@@ -1,13 +1,13 @@
 import { Request } from "express";
 import { IUser } from "./user.interface";
 
-export interface SignUpDataType {
-	email: string;
-	password: string;
-	firstName: string;
-	lastName: string;
-	passwordRepeat: string;
-}
+// export interface SignUpDataType {
+// 	email: string;
+// 	password: string;
+// 	firstName: string;
+// 	lastName: string;
+// 	passwordRepeat: string;
+// }
 
 export interface loginDataType {
 	email: string;

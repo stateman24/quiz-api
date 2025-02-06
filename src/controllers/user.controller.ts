@@ -12,6 +12,7 @@ class UserController{
       next: NextFunction
     )=>{
       try {
+        console.log(req.user)
        const id: string = req.params.id;
        const user = await this.userService.updateUser(req.body, id)
        res.status(StatusCodes.CREATED).json({"data": user})
