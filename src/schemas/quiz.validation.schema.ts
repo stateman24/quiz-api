@@ -14,7 +14,7 @@ export const deleteValidationSchema = z.object({
     questionId: z.string()
 })
 
-export const getQuestionsValidationSchema = z.object({
+export const getQuizIdValidationSchema = z.object({
     quizId: z.string()
 })
 

@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import QuizModel from "../models/quiz.model";
 import { IQuestionData } from "../schemas/question.validation.schema";
 import QuestionService from "./question.service";
-import { IUser } from "../interfaces/user.interface";
+
 
 
 
@@ -86,6 +86,16 @@ class QuizService {
             throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
         }
         return quizQuestions.questions
+    }
+
+    // delete Quiz 
+    public deleteQuiz = async(quizId:String) =>{
+        const quiz = await this.quizModel.findById(quizId);
+        if(!quiz){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
+        await quiz.deleteOne();
+        return quiz
     }
 
 }

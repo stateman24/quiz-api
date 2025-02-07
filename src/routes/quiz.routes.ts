@@ -2,7 +2,7 @@ import { Router } from "express";
 import { Routes } from "../interfaces/route.interface";
 import QuizController from "../controllers/quiz.controller";
 import authMiddleware from "../middlewares/auth.middleware";
-import { createQuizValidationSchema, deleteValidationSchema, getQuestionsValidationSchema } from "../schemas/quiz.validation.schema";
+import { createQuizValidationSchema, deleteValidationSchema, getQuizIdValidationSchema } from "../schemas/quiz.validation.schema";
 import { questionValidationSchema } from "../schemas/question.validation.schema";
 import validationMiddleware from "../middlewares/validation.middleware";
 
@@ -32,22 +32,29 @@ class QuizRoute implements Routes {
             );
 
         // delete question route
-        this.router.post(
+        this.router.delete(
             this.path + "/:quizId/delete-question/:questionId", 
             [authMiddleware, validationMiddleware(deleteValidationSchema, "params")], 
             this.quizController.deleteQuizQuestion
         );
 
+        // delete quiz route
+        this.router.delete(
+            this.path + "/:quizId",
+            [authMiddleware, validationMiddleware(getQuizIdValidationSchema, "params")],
+            this.quizController.deleteQuiz
+        )
+
         // get questions route
         this.router.get(
             this.path + "/questions/:quizId", 
-            [authMiddleware, validationMiddleware(getQuestionsValidationSchema, "params")], 
+            [authMiddleware, validationMiddleware(getQuizIdValidationSchema, "params")], 
             this.quizController.getQuizQuestions
         );
 
         this.router.get(
             this.path + "/:quizId",
-            [authMiddleware, validationMiddleware(getQuestionsValidationSchema, "params")],
+            [authMiddleware, validationMiddleware(getQuizIdValidationSchema, "params")],
             this.quizController.getQuiz
         )
     }

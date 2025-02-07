@@ -78,6 +78,21 @@ class QuizController{
             next(error)
         }
     }
+
+    // delele quiz
+    public deleteQuiz = async(
+        req: RequestWithUser,
+        res: Response,
+        next: NextFunction
+    )=>{
+        try {
+            const quizId = req.params.quizId;
+            const quiz = await this.quizService.deleteQuiz(quizId);
+            res.status(StatusCodes.CREATED).json({"message": "Quiz Deleted Succefully"});
+        } catch (error) {
+            next(error)
+        }
+    }
    
 
 }

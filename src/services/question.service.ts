@@ -16,7 +16,7 @@ class QuestionService {
             const question = new QuestionModel({
                 question: questionData.question,
                 options: questionData.options,
-                correctOption: questionData.correctOption
+                correctOption: questionData.correctOption,
             })
             question.save()
             return question
