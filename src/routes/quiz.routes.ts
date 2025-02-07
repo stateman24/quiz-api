@@ -40,10 +40,16 @@ class QuizRoute implements Routes {
 
         // get questions route
         this.router.get(
-            this.path + "/questions/:id", 
+            this.path + "/questions/:quizId", 
             [authMiddleware, validationMiddleware(getQuestionsValidationSchema, "params")], 
             this.quizController.getQuizQuestions
         );
+
+        this.router.get(
+            this.path + "/:quizId",
+            [authMiddleware, validationMiddleware(getQuestionsValidationSchema, "params")],
+            this.quizController.getQuiz
+        )
     }
 }
 

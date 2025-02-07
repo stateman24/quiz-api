@@ -56,13 +56,29 @@ class QuizController{
         next: NextFunction
     ) =>{
         try {
-            const quizId = req.params.id;
+            const quizId = req.params.quizId;
             const quizQuestions = await this.quizService.getQuizQuestions(quizId);
             res.status(StatusCodes.OK).json({"questions": quizQuestions});
         } catch (error) {
             next(error);
         }
     }
+
+    // get Quiz
+    public getQuiz = async(
+        req: RequestWithUser,
+        res: Response,
+        next: NextFunction
+    ) =>{
+        try {
+            const quizId = req.params.quizId;
+            const quiz = await this.quizService.getQuiz(quizId);
+            res.status(StatusCodes.OK).json({"Quiz": quiz});
+        } catch (error) {
+            next(error)
+        }
+    }
+   
 
 }
 

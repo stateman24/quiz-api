@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import QuizModel from "../models/quiz.model";
 import { IQuestionData } from "../schemas/question.validation.schema";
 import QuestionService from "./question.service";
+import { IUser } from "../interfaces/user.interface";
 
 
 
@@ -32,7 +33,7 @@ class QuizService {
             throw new HTTPException(StatusCodes.BAD_REQUEST, "Something Went wrong")
         }
     }
-    // add question to an existing quiz
+    // Add question to an existing quiz
     public addQuestionToQuiz = async(quizId: String, questionData: IQuestionData) => {
         if (isEmpty(questionData)) {
             throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
@@ -69,6 +70,16 @@ class QuizService {
         return upadatedQuiz
     }
 
+    // get Quiz by Id
+    public getQuiz = async(quizId: String,) => {
+        const quiz = await this.quizModel.findById(quizId);
+        if(!quiz){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
+        return quiz
+    } 
+
+    // get Quiz Questions 
     public getQuizQuestions = async(quizId: String) => {
         const quizQuestions = await this.quizModel.findById(quizId).populate("questions", "-__v -createdAt")
         if(!quizQuestions){

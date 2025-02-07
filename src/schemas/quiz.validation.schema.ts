@@ -10,13 +10,15 @@ export const createQuizValidationSchema = z.object({
 })
 
 export const deleteValidationSchema = z.object({
-    quizId: z.string().uuid("Invalid  quizID"),
-    questionId: z.string().uuid("Invalid questionID")
+    quizId: z.string(),
+    questionId: z.string()
 })
 
 export const getQuestionsValidationSchema = z.object({
-    quizId: z.string().uuid("Invalid quizID")
+    quizId: z.string()
 })
+
+
 
 export type IQuizData = z.infer<typeof createQuizValidationSchema>;
 
