@@ -2,6 +2,9 @@ import { Router } from "express";
 import { Routes } from "../interfaces/route.interface";
 import QuizController from "../controllers/quiz.controller";
 import authMiddleware from "../middlewares/auth.middleware";
+import { createQuizValidationSchema, deleteValidationSchema, getQuizIdValidationSchema } from "../schemas/quiz.validation.schema";
+import { questionValidationSchema } from "../schemas/question.validation.schema";
+import validationMiddleware from "../middlewares/validation.middleware";
 
 class QuizRoute implements Routes {
     public path = "/quiz"
@@ -13,10 +16,47 @@ class QuizRoute implements Routes {
     }
 
     public initializeRoutes = () =>{
-        this.router.post(this.path + "/create-quiz", [authMiddleware], this.quizController.createQuiz);
-        this.router.post(this.path + "/add-question/:id", [authMiddleware], this.quizController.addQuestionToQuiz);
-        this.router.post(this.path + "/:quizId/delete-question/:questionId", [authMiddleware], this.quizController.deleteQuizQuestion);
-        this.router.get(this.path + "/questions/:id", [authMiddleware], this.quizController.getQuizQuestions);
+        // create quiz route
+        this.router.post(
+            this.path + "/create-quiz",
+             [authMiddleware, validationMiddleware(createQuizValidationSchema, "body")]
+             , this.quizController.createQuiz
+            );
+
+        // add-question route    
+        this.router.post(
+            this.path + "/add-question/:id", 
+            [authMiddleware, validationMiddleware(questionValidationSchema, 
+                "body")], 
+                this.quizController.addQuestionToQuiz
+            );
+
+        // delete question route
+        this.router.delete(
+            this.path + "/:quizId/delete-question/:questionId", 
+            [authMiddleware, validationMiddleware(deleteValidationSchema, "params")], 
+            this.quizController.deleteQuizQuestion
+        );
+
+        // delete quiz route
+        this.router.delete(
+            this.path + "/:quizId",
+            [authMiddleware, validationMiddleware(getQuizIdValidationSchema, "params")],
+            this.quizController.deleteQuiz
+        )
+
+        // get questions route
+        this.router.get(
+            this.path + "/questions/:quizId", 
+            [authMiddleware, validationMiddleware(getQuizIdValidationSchema, "params")], 
+            this.quizController.getQuizQuestions
+        );
+
+        this.router.get(
+            this.path + "/:quizId",
+            [authMiddleware, validationMiddleware(getQuizIdValidationSchema, "params")],
+            this.quizController.getQuiz
+        )
     }
 }
 

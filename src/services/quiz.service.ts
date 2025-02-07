@@ -1,10 +1,12 @@
-import { IQuizData } from "../interfaces/quiz.interface";
+import { IQuizData } from "../schemas/quiz.validation.schema";
 import { isEmpty } from "../utils/util";
 import HTTPException from "../exceptions/http.exception";
 import { StatusCodes } from "http-status-codes";
 import QuizModel from "../models/quiz.model";
-import { IQuestionData } from "../interfaces/question.interface";
+import { IQuestionData } from "../schemas/question.validation.schema";
 import QuestionService from "./question.service";
+
+
 
 
 class QuizService {
@@ -31,7 +33,7 @@ class QuizService {
             throw new HTTPException(StatusCodes.BAD_REQUEST, "Something Went wrong")
         }
     }
-    // add question to an existing quiz
+    // Add question to an existing quiz
     public addQuestionToQuiz = async(quizId: String, questionData: IQuestionData) => {
         if (isEmpty(questionData)) {
             throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
@@ -68,12 +70,32 @@ class QuizService {
         return upadatedQuiz
     }
 
+    // get Quiz by Id
+    public getQuiz = async(quizId: String,) => {
+        const quiz = await this.quizModel.findById(quizId);
+        if(!quiz){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
+        return quiz
+    } 
+
+    // get Quiz Questions 
     public getQuizQuestions = async(quizId: String) => {
         const quizQuestions = await this.quizModel.findById(quizId).populate("questions", "-__v -createdAt")
         if(!quizQuestions){
             throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
         }
         return quizQuestions.questions
+    }
+
+    // delete Quiz 
+    public deleteQuiz = async(quizId:String) =>{
+        const quiz = await this.quizModel.findById(quizId);
+        if(!quiz){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
+        await quiz.deleteOne();
+        return quiz
     }
 
 }

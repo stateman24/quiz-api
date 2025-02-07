@@ -17,7 +17,7 @@ const questionSchema: Schema<IQuestion> = new Schema({
     createdAt:{
         type: Date,
         default: Date.now
-    }
+    },
 })
 
 
