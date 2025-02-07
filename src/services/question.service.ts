@@ -37,6 +37,19 @@ class QuestionService {
         }
     }
 
+    // update question
+    public updateQuestion = async(questionId: String, questionData: IQuestionData) => {
+        try {
+            const updateQuestion = this.questionModel.findByIdAndUpdate(questionId, questionData, { new: true });
+            if(!updateQuestion){
+                throw new HTTPException(StatusCodes.NOT_FOUND, "Question does not exist")
+            }
+            return updateQuestion
+        } catch (error) {
+            throw new HTTPException(StatusCodes.BAD_REQUEST, "Something Went wrong")
+        }
+    }
+
 }
 
 export default QuestionService;

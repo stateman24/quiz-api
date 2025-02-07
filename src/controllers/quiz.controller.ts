@@ -49,6 +49,20 @@ class QuizController{
         }
     }
 
+    public updateQuizQuestion = async(
+        req: RequestWithUser,
+        res: Response,
+        next: NextFunction
+    ) =>{
+        try {
+            const { quizId, questionId } = req.params;
+            const quiz = await this.quizService.updateQuizQuestion(req.body, quizId, questionId);
+            res.status(StatusCodes.CREATED).json({"data": quiz});
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // get all the questions in the quiz
     public getQuizQuestions = async(
         req: RequestWithUser,
@@ -75,7 +89,7 @@ class QuizController{
             const quiz = await this.quizService.getQuiz(quizId);
             res.status(StatusCodes.OK).json({"Quiz": quiz});
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -90,7 +104,7 @@ class QuizController{
             const quiz = await this.quizService.deleteQuiz(quizId);
             res.status(StatusCodes.CREATED).json({"message": "Quiz Deleted Succefully"});
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
    
