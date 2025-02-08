@@ -6,111 +6,141 @@ import QuizModel from "../models/quiz.model";
 import { IQuestionData } from "../schemas/question.validation.schema";
 import QuestionService from "./question.service";
 
-
-
-
 class QuizService {
-    private quizModel = QuizModel;
-    private questionService = new QuestionService();
+	private quizModel = QuizModel;
+	private questionService = new QuestionService();
 
-    // create quiz by user
-    public createQuiz = async(quizData: IQuizData, userId: String) =>{
-        try {
-            if (isEmpty(quizData)) {
-                throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
-            }
-            const quiz = new QuizModel({
-                title : quizData.title,
-                description: quizData.description,
-                questions: quizData.questions,
-                categories: quizData.categories,
-                difficulty: quizData.difficulty,
-                createdBy: userId,
-            });
-            await quiz.save();
-            return quiz;
-        } catch (error) {
-            throw new HTTPException(StatusCodes.BAD_REQUEST, "Something Went wrong")
-        }
-    }
-    // Add question to an existing quiz
-    public addQuestionToQuiz = async(quizId: String, questionData: IQuestionData) => {
-        if (isEmpty(questionData)) {
-            throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
-        }
-        // save question to database 
-        const question  = await this.questionService.createQuestion(questionData)
-        // update Quiz question
-        const quiz = await this.quizModel.findByIdAndUpdate(
-            quizId, 
-            { $push: { questions: question._id } }, 
-            { new: true }
-        ).populate("questions");
-        
-        if (!quiz) {
-            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
-        }
-        return quiz
-    }
+	// create quiz by user
+	public createQuiz = async (quizData: IQuizData, userId: String) => {
+		try {
+			if (isEmpty(quizData)) {
+				throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
+			}
+			const quiz = new QuizModel({
+				title: quizData.title,
+				description: quizData.description,
+				questions: quizData.questions,
+				categories: quizData.categories,
+				difficulty: quizData.difficulty,
+				createdBy: userId,
+			});
+			await quiz.save();
+			return quiz;
+		} catch (error) {
+			throw new HTTPException(StatusCodes.BAD_REQUEST, "Something Went wrong");
+		}
+	};
+	// Add question to an existing quiz
+	public addQuestionToQuiz = async (
+		quizId: String,
+		questionData: IQuestionData
+	) => {
+		if (isEmpty(questionData)) {
+			throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
+		}
+		// save question to database
+		const question = await this.questionService.createQuestion(questionData);
+		// update Quiz question
+		const quiz = await this.quizModel
+			.findByIdAndUpdate(
+				quizId,
+				{ $push: { questions: question._id } },
+				{ new: true }
+			)
+			.populate("questions");
 
-    // delete question from quiz
-    public deleteQuizQuestion = async(quizId: String, questionId: String) => {
-        // remove question from database
-        await this.questionService.deleteQuestion(questionId);
-        // find quiz by id and remove question from quiz
-        const upadatedQuiz = await this.quizModel.findByIdAndUpdate(
-            quizId, 
-            {$pull : {questions: questionId}}, 
-            {new: true}
-        ).populate("questions")
-        
-        if(!upadatedQuiz){
-            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
-        }
-        return upadatedQuiz
-    }
+		if (!quiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return quiz;
+	};
 
-    // get Quiz by Id
-    public getQuiz = async(quizId: String,) => {
-        const quiz = await this.quizModel.findById(quizId).populate("questions");
-        if(!quiz){
-            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
-        }
-        return quiz
-    } 
+	// delete question from quiz
+	public deleteQuizQuestion = async (quizId: String, questionId: String) => {
+		// remove question from database
+		await this.questionService.deleteQuestion(questionId);
+		// find quiz by id and remove question from quiz
+		const upadatedQuiz = await this.quizModel
+			.findByIdAndUpdate(
+				quizId,
+				{ $pull: { questions: questionId } },
+				{ new: true }
+			)
+			.populate("questions");
 
-    // get Quiz Questions 
-    public getQuizQuestions = async(quizId: String) => {
-        const quizQuestions = await this.quizModel.findById(quizId).populate("questions", "-__v -createdAt")
-        if(!quizQuestions){
-            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
-        }
-        return quizQuestions.questions
-    }
+		if (!upadatedQuiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return upadatedQuiz;
+	};
 
-    // delete Quiz 
-    public deleteQuiz = async(quizId:String) =>{
-        const quiz = await this.quizModel.findById(quizId);
-        if(!quiz){
-            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
-        }
-        await quiz.deleteOne();
-        return quiz
-    }
+	// get Quiz by Id
+	public getQuiz = async (quizId: String, withCorrectOption: string) => {
+		const withoutCorrectOptionField = "-__v -createdAt -correctOption";
 
-    // updade question in the Quiz
-    public updateQuizQuestion = async(questionData: IQuestionData, quizId: String, questionId: String) => {
-        // update question in database
-        await this.questionService.updateQuestion(questionId, questionData);
-        
-        const quiz = await this.quizModel.findById(quizId,).populate("questions");
-        
-        if(!quiz){
-            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
-        }
-        return quiz
-    }
+		const quiz = await this.quizModel
+			.findById(quizId)
+			.populate(
+				"questions",
+				withCorrectOption === "true"
+					? "-__v -createdAt"
+					: withoutCorrectOptionField
+			);
+		if (!quiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return quiz;
+	};
 
+	// get Quiz Questions
+	public getQuizQuestions = async (quizId: String) => {
+		const quizQuestions = await this.quizModel
+			.findById(quizId)
+			.populate("questions", "-__v -createdAt");
+		if (!quizQuestions) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return quizQuestions.questions;
+	};
+
+	// delete Quiz
+	public deleteQuiz = async (quizId: String) => {
+		const quiz = await this.quizModel.findById(quizId);
+		if (!quiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		await quiz.deleteOne();
+		return quiz;
+	};
+
+	// updade question in the Quiz
+	public updateQuizQuestion = async (
+		questionData: IQuestionData,
+		quizId: String,
+		questionId: String
+	) => {
+		// update question in database
+		await this.questionService.updateQuestion(questionId, questionData);
+
+		const quiz = await this.quizModel.findById(quizId).populate("questions");
+
+		if (!quiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return quiz;
+	};
+
+	// get quiz's correct options only
+	public getQuizCorrectOptions = async (quizId: String): Promise<IQuizData> => {
+		const quiz = await this.quizModel
+			.findById(quizId)
+			.select("questions _id")
+			.populate("questions", "correctOption _id ");
+		if (!quiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return quiz;
+	};
 }
 
 export default QuizService;
