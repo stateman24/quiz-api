@@ -9,7 +9,7 @@ import {
 import authMiddleware from "../middlewares/auth.middleware";
 
 class AuthRoute implements Routes {
-	public path = "/auth";
+	public path = "";
 	public router = Router();
 	private authController = new AuthController();
 

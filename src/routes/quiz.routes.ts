@@ -7,6 +7,7 @@ import {
 	deleteValidationSchema,
 	getQuizIdValidationSchema,
 	getQuizQueryValidationSchema,
+	updateQuizValidationSchema,
 } from "../schemas/quiz.validation.schema";
 import { questionValidationSchema } from "../schemas/question.validation.schema";
 import validationMiddleware from "../middlewares/validation.middleware";
@@ -89,6 +90,16 @@ class QuizRoute implements Routes {
 			this.path + "/correct-options/:quizId",
 			[authMiddleware],
 			this.quizController.getQuizCorrectOptions
+		);
+
+		// update a quiz route
+		this.router.put(
+			this.path + "/:quizId",
+			[
+				authMiddleware,
+				validationMiddleware(updateQuizValidationSchema, "body"),
+			],
+			this.quizController.updateQuiz
 		);
 	};
 }
