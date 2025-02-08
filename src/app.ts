@@ -1,4 +1,4 @@
-import { CREDENTIALS, MONGO_URI, PORT } from "./config";
+import { CREDENTIALS, MONGO_URI, ORIGIN, PORT } from "./config";
 import express, { Application } from "express";
 import { Routes } from "./interfaces/route.interface";
 import errorMiddleware from "./middlewares/error.middleware";
@@ -9,8 +9,6 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
 
-
- 
 class App {
 	public port: number;
 	public app: Application;
@@ -32,7 +30,7 @@ class App {
 
 		this.app.use(express.json());
 		this.app.use(helmet());
-		this.app.use(cors({ origin: CREDENTIALS, credentials: true }));
+		this.app.use(cors({ origin: ORIGIN, credentials: true }));
 		this.app.use(express.urlencoded({ extended: true }));
 		this.app.use(cookieParser());
 	};
@@ -52,7 +50,7 @@ class App {
 			await connectDB(this.mongoDBUri);
 			console.log("Connected to database");
 		} catch (error) {
-			console.error("Failed to connect to database")
+			console.error("Failed to connect to database");
 		}
 	};
 
@@ -67,7 +65,7 @@ class App {
 				console.log(`Failed to start server on port ${this.port}`);
 			}
 			console.log(`Server listening on port ${this.port}`);
-		})
+		});
 	};
 }
-export default App
+export default App;
