@@ -56,8 +56,8 @@ class QuizService {
     // delete question from quiz
     public deleteQuizQuestion = async(quizId: String, questionId: String) => {
         // remove question from database
-        const removeQuestion = await this.questionService.deleteQuestion(questionId);
-        // find quiz by id
+        await this.questionService.deleteQuestion(questionId);
+        // find quiz by id and remove question from quiz
         const upadatedQuiz = await this.quizModel.findByIdAndUpdate(
             quizId, 
             {$pull : {questions: questionId}}, 
@@ -72,7 +72,7 @@ class QuizService {
 
     // get Quiz by Id
     public getQuiz = async(quizId: String,) => {
-        const quiz = await this.quizModel.findById(quizId);
+        const quiz = await this.quizModel.findById(quizId).populate("questions");
         if(!quiz){
             throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
         }
@@ -95,6 +95,19 @@ class QuizService {
             throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
         }
         await quiz.deleteOne();
+        return quiz
+    }
+
+    // updade question in the Quiz
+    public updateQuizQuestion = async(questionData: IQuestionData, quizId: String, questionId: String) => {
+        // update question in database
+        await this.questionService.updateQuestion(questionId, questionData);
+        
+        const quiz = await this.quizModel.findById(quizId,).populate("questions");
+        
+        if(!quiz){
+            throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+        }
         return quiz
     }
 
