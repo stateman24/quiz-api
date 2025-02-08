@@ -11,6 +11,19 @@ export const createQuizValidationSchema = z.object({
 	categories: z.string(),
 });
 
+export const updateQuizValidationSchema = z.object({
+	title: z
+		.string()
+		.min(20, "Title must be at least 20 charcters long")
+		.optional(),
+	description: z
+		.string()
+		.min(10, "Description must be at least 10 charcters long")
+		.optional(),
+	difficulty: z.string().optional(),
+	categories: z.string().optional(),
+});
+
 export const deleteValidationSchema = z.object({
 	quizId: z.string(),
 	questionId: z.string(),

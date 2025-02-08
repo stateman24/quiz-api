@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import QuizModel from "../models/quiz.model";
 import { IQuestionData } from "../schemas/question.validation.schema";
 import QuestionService from "./question.service";
+import { IQuiz } from "../interfaces/quiz.interface";
 
 class QuizService {
 	private quizModel = QuizModel;
@@ -136,6 +137,24 @@ class QuizService {
 			.findById(quizId)
 			.select("questions _id")
 			.populate("questions", "correctOption _id ");
+		if (!quiz) {
+			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
+		}
+		return quiz;
+	};
+
+	// update a quiz with new data
+	public updateQuiz = async (
+		quizId: String,
+		quizData: IQuizData
+	): Promise<IQuiz> => {
+		if (isEmpty(quizData)) {
+			throw new HTTPException(StatusCodes.BAD_REQUEST, "Provide Quiz Data");
+		}
+		const quiz = await this.quizModel.findByIdAndUpdate(quizId, quizData, {
+			new: true,
+		});
+
 		if (!quiz) {
 			throw new HTTPException(StatusCodes.NOT_FOUND, "Quiz Not Found");
 		}

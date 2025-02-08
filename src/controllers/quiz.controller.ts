@@ -134,6 +134,23 @@ class QuizController {
 			next(error);
 		}
 	};
+
+	// update a quiz with new data
+	public updateQuiz = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const quizId = req.params.quizId;
+			const quiz = await this.quizService.updateQuiz(quizId, req.body);
+			res
+				.status(StatusCodes.CREATED)
+				.json({ data: quiz, message: "Updated quiz" });
+		} catch (error) {
+			next(error);
+		}
+	};
 }
 
 export default QuizController;
