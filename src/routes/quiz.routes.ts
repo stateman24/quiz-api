@@ -7,6 +7,7 @@ import {
 	deleteValidationSchema,
 	getQuizIdValidationSchema,
 	getQuizQueryValidationSchema,
+	getQuizzesQueryValidationSchema,
 	updateQuizValidationSchema,
 } from "../schemas/quiz.validation.schema";
 import { questionValidationSchema } from "../schemas/question.validation.schema";
@@ -100,6 +101,13 @@ class QuizRoute implements Routes {
 				validationMiddleware(updateQuizValidationSchema, "body"),
 			],
 			this.quizController.updateQuiz
+		);
+
+		// get all quizzes with or witout questions
+		this.router.get(
+			this.path,
+			[validationMiddleware(getQuizzesQueryValidationSchema, "query")],
+			this.quizController.getQuizzes
 		);
 	};
 }

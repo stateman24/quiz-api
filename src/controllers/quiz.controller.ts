@@ -84,6 +84,27 @@ class QuizController {
 		}
 	};
 
+	// get all quizzes with or without questions
+	public getQuizzes = async (
+		req: RequestWithUser,
+		res: Response,
+		next: NextFunction
+	) => {
+		console.log(req.query.withQuestions);
+		try {
+			const withQuestions = req.query.withQuestions as string;
+			const quizzes = await this.quizService.getQuizzes(withQuestions);
+			res.status(StatusCodes.OK).json({
+				quizzes,
+				message: `All Quizzes ${
+					withQuestions === "true" ? "with questions" : "without questions"
+				}`,
+			});
+		} catch (error) {
+			next(error);
+		}
+	};
+
 	// get Quiz
 	public getQuiz = async (
 		req: RequestWithUser,
