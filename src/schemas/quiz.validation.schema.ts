@@ -37,4 +37,8 @@ export const getQuizQueryValidationSchema = z.object({
 	withCorrectOption: z.enum(["true", "false"]),
 });
 
+export const getQuizzesQueryValidationSchema = z.object({
+	withQuestions: z.enum(["true", "false"]),
+});
+
 export type IQuizData = z.infer<typeof createQuizValidationSchema>;

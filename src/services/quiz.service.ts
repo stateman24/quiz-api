@@ -75,6 +75,21 @@ class QuizService {
 		return upadatedQuiz;
 	};
 
+	// get all Quizzes with or without questions
+	public getQuizzes = async (withQuestions: string): Promise<IQuiz[]> => {
+		const withoutQuestionsField = "-__v -createdAt -questions";
+		const withQuestionsField = "-__v -createdAt";
+
+		const quizzes = await this.quizModel
+			.find()
+			.select(
+				withQuestions === "true" ? withQuestionsField : withoutQuestionsField
+			)
+			.populate(withQuestions === "true" ? "questions" : "");
+
+		return quizzes;
+	};
+
 	// get Quiz by Id
 	public getQuiz = async (quizId: String, withCorrectOption: string) => {
 		const withoutCorrectOptionField = "-__v -createdAt -correctOption";
