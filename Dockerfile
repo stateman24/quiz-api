@@ -1,19 +1,23 @@
-FROM node:18
+FROM node:22-alpine AS builder
 
-# Setworking directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy the application code to the container
+COPY package*.json ./
+RUN npm install 
+
 COPY . .
 
-# Install the app dependencies
-RUN npm install
+RUN npm install -g typescript
+RUN npm run build --if-present
 
-# Compile TypeScript files to JavaScript
-RUN npm run build
+FROM node:22-alpine
 
-# Expose the port the app runs on
+WORKDIR /app
+
+COPY --from=builder /app/package*.json ./
+RUN npm install 
+
+COPY --from=builder /app/dist ./dist
+
+CMD ["npm", "start"]
 EXPOSE 8500
-
-# Command to run the app
-CMD ["node", "dist/server.js"]
