@@ -34,10 +34,9 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy --service-account=${{ secrets.SERVICE_NAME }} \
+          gcloud run deploy --image=us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/stateman24repo/quiz-api:$GITHUB_SHA \
             --region=${{ secrets.REGION }} \
-             --image=us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/stateman24repo/quiz-api:$GITHUB_SHA \
-            --platform=managed \
-            --allow-unauthenticated
+            --service-account=${{ secrets.SERVICE_NAME }} \
+          
 
           
