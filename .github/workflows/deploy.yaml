@@ -12,12 +12,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Google Cloud SDK
+      
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCLOUD_SERVICE_KEY }}
+
+      - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
-          export_default_credentials: true
+          install_components: 'beta'
 
       - name: Configure Docker to use gcloud
         run: gcloud auth configure-docker us-central1-docker.pkg.dev
@@ -34,3 +39,5 @@ jobs:
             --region=${{ secrets.REGION }} \
             --platform=managed \
             --allow-unauthenticated
+
+          
